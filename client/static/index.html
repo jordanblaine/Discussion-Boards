@@ -7,16 +7,24 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
 		<style type="text/css">
+			html{
+				height: 100%;
+			}
 			body{
 				background-image: url("http://74211.com/wallpaper/picture_big/Peaceful-Sea-Blue-Sky-and-Stone-Chair-Combined-Must-be-Comfortable-and-Relaxing-to-Sit-on-Natural-Scenery-Wallpaper.jpg");
 				background-attachment: fixed;
+				width: 100%;
+				height: 100%;
 			}
 			.cont{
 				width: 70%;
-				height: 61em;
-				margin: 30px auto;
+				height: auto;
+				min-height: 97% !important;
+				margin: 3em auto;
 				background-color: rgba(255,255,255,0.9);
 				border-radius: 15px;
+				position: relative;
+				padding-bottom: 10em;
 			}
 			#nav{
 				background-color: rgb(230, 230, 230);
@@ -24,7 +32,7 @@
 				height: 58px;
 			}
 			#nav-right{
-				margin-left: 350px;
+				margin-left: 30%;
 			}
 			.navbut{
 				display: inline-block;
@@ -33,14 +41,21 @@
 			}
 			.navcut{
 				margin-left: 50px;
+				margin-top: 0.8em;
 			}
 			#wel{
 				margin-top: 7px;
 				margin-right: 20px;
 			}
 			#log, #sig{
-				margin-top: 8px;
-				padding: 0px 15px;
+				padding: 0px 10px;
+				vertical-align: middle;
+			}
+			#bottext{
+				position: absolute;
+				bottom: 0.5em;
+				text-align: center;
+				width: 100%;
 			}
 		</style>
 	</head>
@@ -53,14 +68,13 @@
 			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 			        <span class="sr-only">Toggle navigation</span>
 			      </button>
-			      <a style='font-size: 20px' class="navbar-brand" href="#/">Chab  </a>
+			      <a style='font-size: 20px' class="navbar-brand" href="#/">Discussion Boards</a>
 			    </div>
 			    <!-- Collect the nav links, forms, and other content for toggling -->
 			    <div class="collapse navbar-collapse">
 			      <ul class="nav navbar-nav">
-			      	<li><a href="#/daily_pickups">Popular Topics</a></li>
 			        <li class="dropdown">
-			          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">By Category<span class="caret"></span></a>
+			          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Find By Category<span class="caret"></span></a>
 			          <ul class="dropdown-menu">
 			            <li><a href="#/discussions/category/travel">Travel</a></li>
 			            <li><a href="#/discussions/category/sports">Sports</a></li>
@@ -70,28 +84,22 @@
 			            <li><a href="#/discussions/category/entertainment">Entertainment</a></li>
 			          </ul>
 			        </li>
-			        <!-- <li class="dropdown">
-			          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tournaments<span class="caret"></span></a>
-			          <ul class="dropdown-menu">
-			          	<li><a href="#">Search By Sport</a></li>
-			          </ul>
-			        </li> -->
 			      </ul>
 			      	<ul id='nav-right' class="nav navbar-nav">
-			      		<li class='navbut' id='wel' ng-if="currentUser">
+			      		<li class='navbut' id='wel' ng-hide="!currentUser">
 			      			<strong><h4 ng-bind="'Welcome, '+ currentUser.name +'!'"></h4></strong>
 						</li>
-						<li class='navbut' id='bel' ng-if="currentUser">
-							<a href="#/profile">View Profile</a>
+						<li class='navbut' id='bel' ng-hide="!currentUser">
+							<a ng-href='#/profile/{{currentUser._id}}'>View Profile</a>
 			      		</li>
-			      		<li class='navbut' ng-if="currentUser">
+			      		<li class='navbut' ng-hide="!currentUser">
 			      			<a href="#" ng-click='logout()'>Logout</a>
 			      		</li>
-			      		<li class='navcut' id='log' ng-if="!currentUser">
+			      		<li class='navcut' id='log' ng-hide="currentUser">
 			      			<!-- Trigger the modal with a button -->
 							<button id='but' type="button" class="btn btn-default btn-md" data-toggle="modal" data-target="#login">Login</button>
 						</li>
-						<li class='navcut' id='sig' ng-if="!currentUser">
+						<li class='navcut' id='sig' ng-hide="currentUser">
 							<button id='cut' type="button" class="btn btn-default btn-md" data-toggle="modal" data-target="#signup">Sign Up</button>
 			      		</li>
 			      		<!-- <li class='navbut'>
@@ -104,16 +112,17 @@
 			<div class="col-md-2">
 				<div class="btn-group-vertical" role="group">
 					<form action='#/create_discussion' method='get'>
-						<button class="btn btn-default">Create New Topic</button>
+						<button class="btn btn-default">Create New Discussion</button>
 					</form>
-					<form action='#/groups' method='get'>
-						<button class="btn btn-default">Search For Topics</button>
+					<form action='#/search_discussions' method='get'>
+						<button class="btn btn-default">Search Discussions</button>
 					</form>
 				</div>	
 			</div>
 			<div>
 				<div ng-view=''></div>
 			</div>
+			<h5 id='bottext' style='text-align: center'>All rights reserved.</h5>
 		</div>
 		<div>
 			<div id="signup" class="modal fade" role="dialog">
@@ -126,22 +135,24 @@
 			      </div>
 			      <div class="modal-body"> 
 				       	<form role='form'>
-				       		<div class="form-group">
+				       		<div class="form-group" style='width: 95%'>
 				       			<label>Name</label>
 					       		<input class='form-control' placeholder='Name' type='text' ng-model='new_user.name'>
 					       	</div>
-					       	<div class="form-group">
+					       	<div class="form-group" style='width: 95%'>
 				       			<label>Username</label>
 					       		<input class='form-control' placeholder='Username' type='text' ng-model='new_user.username'>
 					       	</div>
-					       	<div class="form-group">
+					       	<div class="form-group" style='width: 95%'>
 				       			<label>Password</label>
 					       		<input class='form-control' placeholder='Password' type='password' ng-model='new_user.password'>
 					       	</div>
-					       	<div class="form-group">
+					       	<div class="form-group" style='width: 95%'>
 				       			<label>Confirm Password</label>
 					       		<input class='form-control' placeholder='Confirm Password' type='password' ng-model='new_user.confirm_password'>
 					       	</div>
+					       	<br>
+					       	<p ng-repeat='error in signup_errors' ng-bind='error' style='color: red'></p>
 				       </form>
 			      </div>
 			      <div class="modal-footer">
@@ -164,14 +175,17 @@
 			      </div>
 			      <div class="modal-body">
 			        <form role='form'>
-				       	<div class="form-group">
+				       	<div class="form-group" style='width: 95%'>
 			       			<label>Username</label>
 				       		<input class='form-control' placeholder='Username' type='text' ng-model='user.username'>
 				       	</div>
-				       	<div class="form-group">
+				       	<br>
+				       	<div class="form-group" style='width: 95%'>
 			       			<label>Password</label>
 				       		<input class='form-control' placeholder='Password' type='password' ng-model='user.password'>
 				       	</div>
+				       	<br>
+				       	<p ng-repeat='error in login_errors' ng-bind='error' style='color: red'></p>
 				    </form>
 			      </div>
 			      <div class="modal-footer">
@@ -183,8 +197,16 @@
 			  </div>
 			</div>
 		</div>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src='index.js'></script>
-	<script type="text/javascript" src='discussion.js'></script>
+		<!-- <footer>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</footer> -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src='index.js'></script>
+		<script type="text/javascript" src='discussion.js'></script>
 	</body>
 </html>

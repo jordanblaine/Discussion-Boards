@@ -5,8 +5,7 @@ const passport = require('passport');
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-
-
+require('./server/config/mongoose.js');
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({
@@ -14,8 +13,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(cookieParser());
-
-require('./server/config/mongoose.js');
 
 app.use(express.static(path.join(__dirname, "./client/static")));
 

@@ -1,0 +1,25 @@
+<style type="text/css">
+	#results{
+		margin: 0 auto;
+		width: 35%;
+		height: 5em;
+		border: 2px solid black;
+		border-radius: 1em;
+	}
+	#title{
+		width: 40%;
+		margin: 0 auto;
+	}
+</style>
+<div class="row">
+	<div id='title'>
+		<h3 style='text-align: center'>Popular Discussions</h3>
+	</div>
+</div>
+<div class="row">
+	<div ng-repeat='discussion in discussions' id='results'>
+		<h4 ng-bind='discussion.title' style='text-align: center'></h4>
+		<p ng-bind='discussion.description' style='text-align: justify'></p>
+		<button ng-click='viewDiscussion(category)' style='margin: 0 auto'>View Discussion</button>
+	</div>
+</div>	

@@ -76,13 +76,14 @@ module.exports = function(app, flash, passport) {
 				}
 				if(!user) {
 					console.log('No User');
-					return done(null, false, req.flash('Username incorrect', 'Please enter a registered username.'));
+					return done(null);
 				}
 				if(!user.validPassword(req.body.password)){
 					console.log('Invalid password');
-					return done(null, false, req.flash('Invalid Password', 'Password is incorrect, enter the correct password.'));
+					return done(null);
 				}
 				else {
+					console.log("good");
 					return done(null, user);
 				}
 			});

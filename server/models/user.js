@@ -2,9 +2,10 @@ var mongoose = require("mongoose");
 var bcrypt = require("bcrypt-nodejs");
 var Schema = mongoose.Schema;
 
+
 var userSchema = new mongoose.Schema({
-	discussion: [{type: Schema.Types.ObjectId, ref: 'Discussion'}],
-	messages: [{type: Schema.Types.ObjectId, ref: 'Message'}],
+	discussions: [{type: Schema.Types.ObjectId, ref: 'discussions'}],
+	messages: [{type: Schema.Types.ObjectId, ref: 'messages'}],
 	name: String,
 	username: String,
 	password: String,
@@ -19,4 +20,4 @@ userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
 
-mongoose.model('users', userSchema);
+var Users = mongoose.model('users', userSchema);

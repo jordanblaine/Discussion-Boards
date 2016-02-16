@@ -4,6 +4,7 @@ var sess;
 Discussion.config(function($routeProvider){
 	$routeProvider
 		.when("/", {
+			templateUrl: "partials/home.html",
 			title: "Home"
 		})
 		.when("/discussions/category/:category", {
@@ -26,29 +27,46 @@ Discussion.config(function($routeProvider){
 			title: "Find By Categories",
 			controller: "new_topicController"
 		})
+		.when("/profile/:id", {
+			templateUrl: "partials/profile.html",
+			title: "User Profile",
+			controller: "profileController"
+		})
+		.when("/popular_discussions", {
+			templateUrl: "partials/popular_discussions.html",
+			title: "Popular Discussions",
+			controller: "popularController"
+		})
+		.when("/search_discussions", {
+			templateUrl: "partials/search_discussions.html",
+			title: "Search Discussions",
+			controller: "searchController"
+		})
 });
 
-Discussion.factory("sessionsFactory", function($http, $location){
+Discussion.factory("sessionsFactory", function($http, $location, $window){
 	
 	var currentUser;
 
 	var factory = {};
 
-	factory.sign_up = function(user, seeError){
-		$http.post("/users/create", user).success(function(user){
-			return user;
-		}).error(function(err){
-			return err;
-		});
+	factory.sign_up = function(user){
+		$http.post("/users/create", user)
+			.success(function(user){
+				$window.location.reload();
+			}).error(function(error){
+				callback(error);
+			});
 	}
 	
 
-	factory.login = function(user, seeError){
-		$http.post("/users/login", user).success(function(user){
-			return user;
-		}).error(function(err){
-			return err;
-		});
+	factory.login = function(user, callback){
+		$http.post("/users/login", user)
+			.success(function(user){
+				$window.location.reload();
+			}).error(function(error){
+				callback(error);
+			});
 	}
 
 	factory.getCurrent = function(callback){
@@ -57,24 +75,79 @@ Discussion.factory("sessionsFactory", function($http, $location){
 		});
 	}
 
-	factory.logout = function(current, reportError){
-		$http.post("/users/logout", current).success(function(user){
-				return user;
-		}).error(function(err){
-			return err;
+	factory.logout = function(current){
+		$http.post("/users/logout", current)
+			.success(function(user){
+				$window.location.reload();
+			}
+		);
+	}
+
+	factory.askedByUser = function(current){
+		console.log(current);
+		$http.get("/users/user-discussions", current).success(function(discussions){
+			return discussions;
 		});
 	}
+
+	factory.profileName = function(user, callback){
+		$http.get("/users/get/name/"+user).success(function(name){
+			callback(name);
+		});
+	}
+
+	factory.messageCount = function(user, callback){
+		$http.get("/users/count/messages/"+user).success(function(number){
+			callback(number);
+		});
+	}
+
+	factory.discussionCount = function(user, callback){
+		$http.get("/users/count/discussions/"+user).success(function(number){
+			callback(number);
+		});
+	}
+
+	factory.featuredDiscussions = function(callback){
+		$http.get("/discussions/home/featured").success(function(results){
+			callback(results);
+		});
+	}
+	
+	factory.newDiscussions = function(callback){
+			$http.get("/discussions/home/new").success(function(results){
+				callback(results);
+			});
+		}
 
 	return factory;
 });
 
-Discussion.controller("indexController", function(sessionsFactory, discussionsFactory, $scope, $location){
+Discussion.controller("profileController", function(sessionsFactory, discussionsFactory, $routeParams, $scope, $location){
+
+	var user_id = $routeParams.id;
+
+	sessionsFactory.profileName(user_id, function(user){
+		$scope.name = user.name;
+		console.log($scope.name);
+	});
+
+	sessionsFactory.discussionCount(user_id, function(number){
+		$scope.discussionCount = number.number;
+		console.log($scope.discussionCount);
+	});
+
+	sessionsFactory.messageCount(user_id, function(number){
+		$scope.messageCount = number.number;
+		console.log($scope.messageCount);
+	});
 	
 });
 
-Discussion.controller("userController", function(sessionsFactory, discussionsFactory, $scope, $location){
+Discussion.controller("userController", function(sessionsFactory, discussionsFactory, $scope, $location, $window){
 
 	$scope.currentUser = null;
+	$scope.errors = [];
 
 	sessionsFactory.getCurrent(function(user){
 		if(user.name){
@@ -84,24 +157,57 @@ Discussion.controller("userController", function(sessionsFactory, discussionsFac
 	});
 
 	$scope.user_login = function(){
-		sessionsFactory.login($scope.user,
-			function(error){
-				alert(error);
-				$scope.user = {};
+		$scope.login_errors = [];
+		if ($scope.user) {
+			if ($scope.user.username && $scope.user.password){
+				sessionsFactory.login($scope.user, function(error){
+					if(error){
+						$scope.login_errors.push("Your Username and Password combination is incorrect. Please try again.");
+					}
+				});
+			} else {
+				$scope.login_errors.push("Please fill in all of the form's fields to login.");
 			}
-		);
+		} else {
+			$scope.login_errors.push("Please fill in all of the form's fields to login.");
+		}
+		
 	}
 
 	$scope.user_signup = function(){
-		sessionsFactory.sign_up($scope.new_user,
-			function(error){
-				alert(error);
-				$scope.new_user = {};
+		$scope.signup_errors = [];
+		if ($scope.new_user) {
+			if ($scope.new_user.name &&
+				$scope.new_user.username &&
+				$scope.new_user.password &&
+				$scope.new_user.confirm_password){
+				if($scope.new_user.password === $scope.new_user.confirm_password){
+					if ($scope.new_user.password.length > 5) {
+						sessionsFactory.sign_up($scope.new_user, function(error){
+							if(error){
+								$scope.signup_errors.push("That Username is already taken. Please select a new Username.");
+							}						
+						});
+					} else {
+						$scope.new_user.password = null;
+						$scope.new_user.confirm_password = null;
+						$scope.signup_errors.push("Make sure your password is at least 6 characters long.");
+					}
+				} else {
+					$scope.new_user.password = null;
+					$scope.new_user.confirm_password = null;
+					$scope.signup_errors.push("Make sure that your password and confirmation password are the same.");
+				}
+			} else {
+				$scope.signup_errors.push("Please fill in all of the form's fields to signup.");
 			}
-		);
+		} else {
+			$scope.signup_errors.push("Please fill in all of the form's fields to signup.");
+		}
+		
 	}
 
-$scope.logout = function(){
+	$scope.logout = function(){
 		sessionsFactory.logout($scope.currentUser,
 			function(error){
 				alert(error);
@@ -109,6 +215,13 @@ $scope.logout = function(){
 		);
 	}
 
-});
+	sessionsFactory.featuredDiscussions(function(discussions){
+		$scope.feat_discussions = discussions;
+	});
 
+	sessionsFactory.newDiscussions(function(discussions){
+		$scope.new_discussions = discussions;
+	});
+
+});
 
