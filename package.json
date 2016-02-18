@@ -1,8 +1,7 @@
 {
     "name": "Discussion Boards",
     "version": "0.0.0",
-    "description": "Web app built with Node, Express, and Angular."
-    },
+    "description": "Web app built with Node, Express, and Angular.",
     "repository": {
         "type": "git",
         "url": "https://github.com/jordanblaine/Discussion-Boards"
