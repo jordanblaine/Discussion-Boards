@@ -62,22 +62,29 @@ Discussion.controller("new_topicController", function(sessionsFactory, discussio
 		$scope.errors = [];
 		console.log($scope.discussion);
 		if($scope.currentUser){
-			if($scope.discussion._user){
-				$scope.discussion._user = "56bf02002d439178480dfcc4";
-			} else {
-				$scope.discussion._user = user;
-			}
-			console.log($scope.discussion);
-			discussionsFactory.createTopic($scope.discussion,
-				function(error){
-					alert(error);
-					$scope.discussion = {};
+			if($scope.discussion){
+					if($scope.discussion.title && $scope.discussion.description && $scope.discussion.category){
+					if($scope.discussion._user){
+						$scope.discussion._user = "56bf02002d439178480dfcc4";
+					} else {
+						$scope.discussion._user = user;
+					}
+					console.log($scope.discussion);
+					discussionsFactory.createTopic($scope.discussion,
+						function(error){
+							alert(error);
+							$scope.discussion = {};
+						}
+					);
+				} else {
+					$scope.errors.push("Please fill in all of the form's fields to create a discussion.");
 				}
-			);
+			} else {
+				$scope.errors.push("Please fill in all of the form's fields to create a discussion.");
+			}
 		} else {
 			$scope.errors.push("You must login before you can create a new discussion.");
 		}
-		
 	}
 });
 
