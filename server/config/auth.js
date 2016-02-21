@@ -6,10 +6,12 @@ var Users = mongoose.model("users");
 
 module.exports = function(app, flash, passport) {
 
+	var uristring = 'mongodb://jordan:Jbblaine3@ds011168.mongolab.com:11168/discussion-boards';
+
 	app.use(session({
 		store: new MongoStore({
 			mongooseConnection: mongoose.connection,
-			url: 'mongodb://localhost/sports' 
+			url: uristring 
 		}),
 		secret: 'Secret',
 		resave: true,

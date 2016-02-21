@@ -9,7 +9,7 @@ module.exports = {
 		var discussion = new Discussions(req.body);
 		Users.findById(req.body._user, function(err,response){
 			if(response){
-				response.discussion = discussion._id;
+				response.discussions.push(discussion._id);
 				discussion.save(function(err){
 					response.save(function(err){
 						if(err){
@@ -129,7 +129,7 @@ module.exports = {
 			if(err){
 				console.log(err);
 			} else {
-				if(User.messages[0]){
+				if(User.messages.length > 0){
 					number = User.messages.length;
 				} else {
 					number = 0;

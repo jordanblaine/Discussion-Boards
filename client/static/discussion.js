@@ -37,11 +37,6 @@ Discussion.factory("discussionsFactory", function($http, $location, $routeParams
 			callback(result);
 		});
 	}
-	factory.populateDiscussion = function(Discussion, callback){
-		$http.get("/discussions/populate/" + Discussion).success(function(result){
-			callback(result);
-		});
-	}
 
 	return factory;
 });
