@@ -20,6 +20,6 @@ require('./server/config/auth.js')(app, flash, passport);
 
 require('./server/config/routes.js')(app, flash, passport);
 
-const server = app.listen(8000, function() {
+const server = app.listen(9000, function() {
 	console.log("Now listening on port 8000");
 });

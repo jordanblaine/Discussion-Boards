@@ -33,23 +33,21 @@
 				height: 58px;
 			}
 			#nav-right{
-				margin-left: 30%;
+				width: 40%;
 			}
 			.navbut{
 				display: inline-block;
 				vertical-align: middle;
-				padding: 0px 15px;
+				padding-right: 5%;
 			}
 			.navcut{
-				margin-left: 50px;
 				margin-top: 0.8em;
 			}
 			#wel{
 				margin-top: 7px;
-				margin-right: 20px;
 			}
 			#log, #sig{
-				padding: 0px 10px;
+				padding: 0px 2em;
 				vertical-align: middle;
 			}
 			#bottext{
@@ -71,9 +69,7 @@
 			      </button>
 			      <a style='font-size: 20px' class="navbar-brand" href="#/">Discussion Boards</a>
 			    </div>
-			    <!-- Collect the nav links, forms, and other content for toggling -->
-			    <div class="collapse navbar-collapse">
-			      <ul class="nav navbar-nav">
+			      <ul class="nav navbar-nav" style='margin-right: 20%'>
 			        <li class="dropdown">
 			          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Find By Category<span class="caret"></span></a>
 			          <ul class="dropdown-menu">
@@ -93,7 +89,7 @@
 						<li class='navbut' id='bel' ng-hide="!currentUser">
 							<a ng-href='#/profile/{{currentUser._id}}'>View Profile</a>
 			      		</li>
-			      		<li class='navbut' ng-hide="!currentUser">
+			      		<li class='navbut' style='padding-right: 0' ng-hide="!currentUser">
 			      			<a href="#" ng-click='logout()'>Logout</a>
 			      		</li>
 			      		<li class='navcut' id='log' ng-hide="currentUser">
@@ -107,18 +103,20 @@
 			      			<a href="#/about">About Us</a>
 			      		</li> -->
 			      	</ul>
-			    </div><!-- /.navbar-collapse -->
 			  </div><!-- /.container-fluid -->
 			</nav>
-			<div class="col-md-2">
-				<div class="btn-group-vertical" role="group">
-					<form action='#/create_discussion' method='get'>
-						<button class="btn btn-default">Create New Discussion</button>
-					</form>
-					<form action='#/search_discussions' method='get'>
-						<button class="btn btn-default">Search Discussions</button>
-					</form>
-				</div>	
+			<div class="row" style='height: 1em'></div>
+			<div class="row">
+				<div class="col-md-2">
+					<div class="btn-group-vertical" role="group">
+						<form action='#/create_discussion' method='get'>
+							<button class="btn btn-default">Create New Discussion</button>
+						</form>
+						<form action='#/search_discussions' method='get'>
+							<button class="btn btn-default">Search Discussions</button>
+						</form>
+					</div>	
+				</div>
 			</div>
 			<div>
 				<div ng-view=''></div>

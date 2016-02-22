@@ -27,13 +27,13 @@ Discussion.factory("discussionsFactory", function($http, $location, $routeParams
 			callback(result);
 		});
 	}
-	factory.get_popular = function(callback){
-		$http.get("/discussions/get/popular").success(function(result){
+	factory.search_discussions = function(search, callback){
+		$http.get("/discussions/search/" + search).success(function(result){
 			callback(result);
 		});
 	}
-	factory.search_discussions = function(search, callback){
-		$http.get("/discussions/search/" + search).success(function(result){
+	factory.populateDiscussion = function(Discussion, callback){
+		$http.get("/discussions/populate/" + Discussion).success(function(result){
 			callback(result);
 		});
 	}
