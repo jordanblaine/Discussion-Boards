@@ -50,7 +50,7 @@ Discussion.factory("sessionsFactory", function($http, $location, $window){
 
 	var factory = {};
 
-	factory.sign_up = function(user){
+	factory.sign_up = function(user, callback){
 		$http.post("/users/create", user)
 			.success(function(user){
 				$window.location.reload();
@@ -147,7 +147,6 @@ Discussion.controller("profileController", function(sessionsFactory, discussions
 Discussion.controller("userController", function(sessionsFactory, discussionsFactory, $scope, $location, $window){
 
 	$scope.currentUser = null;
-	$scope.errors = [];
 
 	sessionsFactory.getCurrent(function(user){
 		if(user.name){

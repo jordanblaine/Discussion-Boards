@@ -57,7 +57,7 @@ module.exports = function(app, flash, passport) {
 					});
 				} else {
 					console.log('Email taken');
-					return done(null, false, req.flash('Email Taken', 'That username has already been taken.'));
+					return done(null);
 				}
 			});
 		}
